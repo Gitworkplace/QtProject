@@ -85,7 +85,7 @@ void Interface::erhoehen(int anzahlGeschenke){
 void Interface::erniedrigen(int aktLeben){
 
     if(aktLeben == 0){//>0){//==0){
-        SceneHolder::Instance()->SwitchScene(1);
+        SceneHolder::Instance()->SwitchScene(1); //Scene 1 = Game Over Scene
         return;
     }
     lebenCounter[aktLeben]->setEnabled(false);

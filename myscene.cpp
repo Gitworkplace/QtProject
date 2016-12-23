@@ -80,8 +80,11 @@ Node* initSceneGameOver(){
     Node* root = new Node;
     Drawable* GameOver_obj = new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over.obj")));
     GameOver_obj->getProperty<ModelTransformation>()->translate(-2, -6, 0);
+    Drawable* GameOverContinue_obj=new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over_ContinueText.obj")));
+    GameOverContinue_obj->getProperty<ModelTransformation>()->translate(-4.5, 4, 0);
 
     root->addChild(new Node(GameOver_obj));
+    root->addChild((new Node(GameOverContinue_obj)));
     //GUIHolderNode->addChild(new Node(LevelClear_obj));
     return root;
 
