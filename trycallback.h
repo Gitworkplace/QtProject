@@ -27,20 +27,18 @@ public:
         gift_obj->setEnabled(false);
 
 
-        PA->anzahlGeschenke++;
-        PA->interf->erhoehen();
+        //PA->anzahlGeschenke++;
+        PA->GiftPicked((Drawable*)giftPhys->getGeometry());
+        //PA->interf->erhoehen();
     }
 
     //deathzone
     void HitByDeathzone(PhysicObject*& a, PhysicObject*& b, QList<CollisionPointInfo>& c){
 
         if(b->getCollisionMask() == 8){
-            //if(PA->lives != 0){
-            if(PA->lives==1){
-                PA->lives = 0;
-                PA->interf->erniedrigen();
-            }
-            //}
+                //PA->state = 0;
+                //PA->lifes--;
+                 PA->PlayerDied();
             /*
             if(PA->backward){
                 player_obj = (Drawable*)b->getGeometry();
@@ -51,7 +49,7 @@ public:
             QVector4D vec4(0, 3, 0, 1);
             v_Matrix.setColumn(3, vec4);
             b->setEngineModelMatrix(v_Matrix);
-            PA->lives = false; */
+            PA->state = false; */
         }
         //"zerstöre" alles andere
         else{
@@ -67,10 +65,7 @@ public:
             if(PA->enemyDetected == true){
              return;
             }
-            if(PA->lives==1){
-                PA->lives = 0;
-                PA->interf->erniedrigen();
-            }
+            PA->PlayerDied();
 
         }
     }

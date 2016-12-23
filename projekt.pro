@@ -36,13 +36,15 @@ SOURCES += \
     myscene.cpp \
     playerattributes.cpp \
     objticker.cpp \
-    interface.cpp
+    interface.cpp \
+    sceneholder.cpp
 HEADERS += \
     characterticker.h \
     trycallback.h \
     playerattributes.h \
     objticker.h \
-    interface.h
+    interface.h \
+    sceneholder.h
 
 DISTFILES += \
     texture.frag \

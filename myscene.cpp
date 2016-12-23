@@ -54,15 +54,18 @@ void SceneManager::initScenes()
     RenderingContext* myContext = new RenderingContext(cam);
     unsigned int myContextNr = SceneManager::instance()->addContext(myContext);
 
-     myScene = SceneManager::instance()->addScene(initScene1());
-
+    myScene = SceneManager::instance()->addScene(initScene1());
     gameOverScene = SceneManager::instance()->addScene(initSceneGameOver());
 
+
     ScreenRenderer* myRenderer = new ScreenRenderer(myContextNr, myScene);
-    Q_UNUSED(myRenderer);
+    //ScreenRenderer* myRenderer2 = new ScreenRenderer(myContextNr, gameOverScene);
+    SceneHolder::Instance()->AddRenderer(myRenderer);
+    //SceneHolder::Instance()->AddRenderer(myRenderer);
+    Q_UNUSED(SceneHolder::Instance());
 
     // Vorsicht: Die Szene muss initialisiert sein, bevor das Fenster verändert wird (Fullscreen)
-    SceneManager::instance()->setActiveScene(myScene);
+    //SceneManager::instance()->setActiveScene(gameOverScene);
     SceneManager::instance()->setActiveContext(myContextNr);
    // SceneManager::instance()->setFullScreen();
 }
@@ -74,11 +77,9 @@ void SceneManager::initScenes()
  * */
 
 Node* initSceneGameOver(){
-    Node* root=new Node;
+    Node* root = new Node;
     Drawable* GameOver_obj = new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over.obj")));
-
-    //LevelClear_obj->getProperty<ModelTransformation>()->translate(0, +2, 0);
-
+    GameOver_obj->getProperty<ModelTransformation>()->translate(-2, -6, 0);
 
     root->addChild(new Node(GameOver_obj));
     //GUIHolderNode->addChild(new Node(LevelClear_obj));
@@ -88,16 +89,12 @@ Node* initSceneGameOver(){
 
 Node* initScene1()
 {
+
+
     Node* root = new Node;
     root->addChild(CreatePlayer());
-
-    Node* levelNode = CreateLevel();
-    root->addChild(levelNode);
-    //levelNode->addChild(CreateLevelCollision()); wird nicht mehr gebraucht
-
-
+    root->addChild(CreateLevel());
     CreateDeathzone();  //wenn als Node -> Deadzone sichtbar
-
     root->addChild(CreateGifts());
     root->addChild(CreateEnemies());
     root->addChild(CreateGUI());
@@ -209,7 +206,7 @@ Node* CreateGifts(){
     // Der Callback wird außerdem nur für das Object aufgerufen an das es angehangen wurde
     // Zuerst Drawable erzeugen und platzieren, dort wird auch der Trigger platziert
 
-    int iAnzahl =5;
+    int iAnzahl = 5;
     Drawable* gifts[iAnzahl] ={0};
     Trigger* giftTriggers[iAnzahl] ={0};
     Drawable* gift_geo = new Drawable(new TriangleMesh(path + QString("/zeug/Geschenk.obj")));
@@ -220,6 +217,7 @@ Node* CreateGifts(){
     for(int i= 0; i < iAnzahl; i++){
         gifts[i] = new Drawable(gift_geo->getGeometry());
         gifts[i]->getProperty<ModelTransformation>()->translate(xPositionen[i], yPositionen[i], 0.f);
+        //gifts[i]->getProperty<ModelTransformation>()->translate(-2, 2, 0.f);
 
         GiftsHolderNode->addChild(new Node(gifts[i]));
 

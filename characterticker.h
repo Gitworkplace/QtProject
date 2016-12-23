@@ -57,8 +57,8 @@ private:
     QMatrix4x4 spielerEngineModelMatrix;
     QVector4D startWert;
 
-    QList<Drawable*> deadEnemiesList;
-    QList<Drawable*>::iterator i;
+    //QList<Drawable*> deadEnemiesList;
+    //QList<Drawable*>::iterator i;
 
     //evtl. mit
     //switch statement?!?

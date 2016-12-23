@@ -7,7 +7,7 @@ Interface::Interface(QString path){
     lifeHolderNode=new Node();
     aktEinser=0;
     aktZehner=0;
-    aktLeben=3;
+    //aktLeben=3;
 }
 
 Node* Interface::addGiftCounter(){
@@ -29,18 +29,11 @@ Node* Interface::addGiftCounter(){
 
         giftCounterEiner[i]->setEnabled(false);
         giftCounterZehner[i]->setEnabled(false);
-
-
     }
-
-
-
-    giftCounterEiner[aktEinser]->setEnabled(true);
-    giftCounterZehner[aktZehner]->setEnabled(true);
-
+    giftCounterEiner[0]->setEnabled(true);
+    giftCounterZehner[0]->setEnabled(true);
 
     return giftHolderNode;
-
 }
 
 
@@ -59,10 +52,7 @@ Node* Interface::addLifeCounter(){
         lebenCounter[i]->setShader(s1);
 
         lebenCounter[i]->setEnabled(false);
-
-
     }
-
     herz=new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Herz.obj")));
     herz->setShader(s2);
 
@@ -76,12 +66,15 @@ Node* Interface::addLifeCounter(){
 }
 
 
-void Interface::erhoehen(){
+void Interface::erhoehen(int anzahlGeschenke){
+
     giftCounterEiner[aktEinser]->setEnabled(false);
     giftCounterZehner[aktZehner]->setEnabled(false);
-    aktEinser++;
-    if(aktEinser==10){
-        aktEinser=0;
+
+    aktEinser = anzahlGeschenke % 10;
+    //aktZehner = anzahlGeschenke / 10;
+    //aktEinser++;
+    if(aktEinser==0){
         aktZehner++;
     }
     giftCounterEiner[aktEinser]->setEnabled(true);
@@ -89,18 +82,35 @@ void Interface::erhoehen(){
 
 }
 
-void Interface::erniedrigen(){
+void Interface::erniedrigen(int aktLeben){
 
-
-    if(aktLeben==0){
+    if(aktLeben == 0){//>0){//==0){
+        SceneHolder::Instance()->SwitchScene(1);
         return;
     }
     lebenCounter[aktLeben]->setEnabled(false);
-    aktLeben--;
+    //aktLeben = leben;
 
-    lebenCounter[aktLeben]->setEnabled(true);
+    lebenCounter[--aktLeben]->setEnabled(true);
+}
 
+void Interface::Reset(int anzahlLeben){
+    ResetLeben(anzahlLeben);
+    ResetGeschenke();
+}
 
+void Interface::ResetLeben(int anzahlLeben){
+    lebenCounter[0]->setEnabled(false);
+    lebenCounter[anzahlLeben]->setEnabled(true);
+}
+
+void Interface::ResetGeschenke(){
+    giftCounterEiner[aktEinser]->setEnabled(false);
+    giftCounterZehner[aktZehner]->setEnabled(false);
+    aktEinser=0;
+    aktZehner=0;
+    giftCounterEiner[aktEinser]->setEnabled(true);
+    giftCounterZehner[aktZehner]->setEnabled(true);
 }
 
 

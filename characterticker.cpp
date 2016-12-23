@@ -17,28 +17,29 @@ CharacterTicker::CharacterTicker(DynamicCharacterWithCam* dynaCam, PlayerAttribu
 
     startWert = QVector4D(0, 3, 0, 1);
 }
-//test
+
 void CharacterTicker::doIt(){
     v_MoveFlagsDynCh = 0;
     time = m_Timer.restart();
 
-    switch(pAttributes->lives){
+    switch(pAttributes->state){
     case 0: //spieler is tot
         if(pAttributes->backward){
             modelRotation->rotate(180, 0, 1, 0);
             pAttributes->backward = false;
         }
         Sleep(500);
-        for(i = deadEnemiesList.begin(); i != deadEnemiesList.end(); ++i){
-            (*i)->setEnabled(true);
-            (*i)->getPhysicObject()->registerPhysicObject();
-        }
-        deadEnemiesList.clear();
 
         spielerEngineModelMatrix = _playerPhys->getEngineModelMatrix();
         spielerEngineModelMatrix.setColumn(3, startWert);
        _playerPhys->setEngineModelMatrix(spielerEngineModelMatrix);
-        pAttributes->lives = 1;
+
+        if(pAttributes->lifes < 0){
+            pAttributes->state = 2;
+        }
+        else{
+            pAttributes->state = 1;
+        }
         break;
 
     case 1: // spieler lebt
@@ -91,7 +92,16 @@ void CharacterTicker::doIt(){
               _player_obj->getPhysicObject()->setGravity(QVector3D(0, -142, 0));
         }
         break;
+
+    case 2: // spieler im Gameoverscreen
+
+        if(InputObserver::isKeyPressed('y')){
+            SceneHolder::Instance()->SwitchScene(0);
+            pAttributes->Reset();
+        }
+        break;
     }
+
     player->moveCharacter(time, v_MoveFlagsDynCh);
 }
 
@@ -110,7 +120,6 @@ void CharacterTicker::UpdateRayCast(){
     v_PhysicObjectA = _physicEngine->rayTestClosestBody(beginn3DVec,end3DVecA);
     v_PhysicObjectB = _physicEngine->rayTestClosestBody(beginn3DVec,end3DVecB);
 }
-
 void CharacterTicker::CheckRayCast(){
     if (v_PhysicObjectA != nullptr)
     {
@@ -121,8 +130,6 @@ void CharacterTicker::CheckRayCast(){
         UpdateJumpState(v_PhysicObjectB);
     }
 }
-
-
 void CharacterTicker::UpdateJumpState(PhysicObject* v_PhysicObject){
     //qInfo() << v_PhysicObject->getPhysicType();
     //ground
@@ -136,13 +143,11 @@ void CharacterTicker::UpdateJumpState(PhysicObject* v_PhysicObject){
         EnemyHit((Drawable*)v_PhysicObject->getGeometry());
     }
 }
-
-
-
 void CharacterTicker::EnemyHit(Drawable* enemy_obj){
     pAttributes->enemyDetected = true;
     v_MoveFlagsDynCh |= MovementFlag::Jump;
     enemy_obj->setEnabled(false);
     enemy_obj->getPhysicObject()->removeFromPhysicEngine();
-    deadEnemiesList.append(enemy_obj);
+    //deadEnemiesList.append(enemy_obj);
+    pAttributes->EnemyKilled(enemy_obj);
 }
