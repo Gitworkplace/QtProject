@@ -95,6 +95,21 @@ Node* initSceneGameOver(){
 
 }
 
+Node *initSceneLevelClear(){
+    Node* root=new Node;
+
+    Drawable* LevelClear_obj = new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Level_Clear.obj")));
+    LevelClear_obj->getProperty<ModelTransformation>()->translate(-0, -0, 0);
+    Drawable* LevelClearContinue_obj=new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over_ContinueText.obj")));
+    LevelClearContinue_obj->getProperty<ModelTransformation>()->translate(-4.5, 4, 0);
+
+    root->addChild(new Node(LevelClear_obj));
+    root->addChild((new Node(LevelClearContinue_obj)));
+
+    return root;
+}
+
+
 Node* initScene1()
 {
 
@@ -113,19 +128,7 @@ Node* initScene1()
     return root;
 }
 
-Node *initSceneLevelClear(){
-    Node* root=new Node;
 
-    Drawable* LevelClear_obj = new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Level_Clear.obj")));
-    LevelClear_obj->getProperty<ModelTransformation>()->translate(-0, -0, 0);
-    Drawable* LevelClearContinue_obj=new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over_ContinueText.obj")));
-    LevelClearContinue_obj->getProperty<ModelTransformation>()->translate(-4.5, 4, 0);
-
-    root->addChild(new Node(LevelClear_obj));
-    root->addChild((new Node(LevelClearContinue_obj)));
-
-    return root;
-}
 
 Node* CreatePlayer(){
     Drawable* player_obj = new Drawable(new TriangleMesh(path + QString("/zeug/Player.obj"))); //"C:\\Users\\stlnsche\\Desktop\\computergrafik\\Player.obj"));
@@ -394,7 +397,7 @@ Node* CreateSchlitten(){
 
     schlittenTriggers->registerTrigger();
 
-    schlittenPhys->setPhysicType(2); //kinematic geht!
+    //schlittenPhys->setPhysicType(2); //kinematic geht!
     schlittenPhys->setPhysicState(0); // ist jetzt static
     schlittenPhys->registerPhysicObject();
 

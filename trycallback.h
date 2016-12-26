@@ -26,33 +26,14 @@ public:
         giftPhys->removeFromPhysicEngine();
         gift_obj = (Drawable*)giftPhys->getGeometry();
         gift_obj->setEnabled(false);
-
-
-        //PA->anzahlGeschenke++;
         PA->GiftPicked((Drawable*)giftPhys->getGeometry());
-        //PA->interf->erhoehen();
     }
 
     //deathzone
     void HitByDeathzone(PhysicObject*& a, PhysicObject*& b, QList<CollisionPointInfo>& c){
-
         if(b->getCollisionMask() == 8){
-                //PA->state = 0;
-                //PA->lifes--;
                  PA->PlayerDied();
-            /*
-            if(PA->backward){
-                player_obj = (Drawable*)b->getGeometry();
-                player_obj->getProperty<ModelTransformation>()->rotate(180, 0, 1, 0);
-                PA->backward = false;
-            }
-            v_Matrix = b->getEngineModelMatrix();
-            QVector4D vec4(0, 3, 0, 1);
-            v_Matrix.setColumn(3, vec4);
-            b->setEngineModelMatrix(v_Matrix);
-            PA->state = false; */
         }
-        //"zerstöre" alles andere
         else{
         b->removeFromPhysicEngine();
         obj = (Drawable*)b->getGeometry();
@@ -61,23 +42,21 @@ public:
     }
     //enemy
     void HitByEnemy(PhysicObject*& a, PhysicObject*& playerPhys, QList<CollisionPointInfo>& c){
-
         if(playerPhys->getCollisionMask() == 8){
             if(PA->enemyDetected == true){
              return;
             }
             PA->PlayerDied();
-
         }
     }
-
+    //ReachedGoal
     void reachedGoal(PhysicObject*& a, PhysicObject*& b, QList<CollisionPointInfo>& c){
+        PA->state = 3;
         SceneHolder::Instance()->SwitchScene(2); //Scene 2 = Level Clear Scene
-        PA->state=3;
+
     }
 
 private:
-    //Drawable* player_obj;
     Drawable* gift_obj;
     Drawable* obj;
     PlayerAttributes* PA;

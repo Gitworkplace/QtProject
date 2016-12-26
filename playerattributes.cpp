@@ -46,9 +46,7 @@ void PlayerAttributes::ResetLevel(){ //Wird ausgeführt, wenn Level beendet
     }
     killedEnemys.clear();
     pickedGifts.clear();
-    interf->Reset();
-    anzahlGeschenke = 0;
-    state=1;
+    Reset();
 }
 
 void PlayerAttributes::Reset(){
@@ -59,8 +57,8 @@ void PlayerAttributes::Reset(){
     anzahlGeschenke = 0;
     lifes = 3;
     GODMODE = false;
-    if(state == 2){
-        interf->Reset();
-    }
+    //if(state == 2){
+    interf->Reset();
+    //}
     state = 1;
 }

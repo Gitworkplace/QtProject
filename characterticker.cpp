@@ -29,7 +29,6 @@ void CharacterTicker::doIt(){
             pAttributes->backward = false;
         }
         Sleep(500);
-
         spielerEngineModelMatrix = _playerPhys->getEngineModelMatrix();
         spielerEngineModelMatrix.setColumn(3, startWert);
        _playerPhys->setEngineModelMatrix(spielerEngineModelMatrix);
@@ -99,22 +98,22 @@ void CharacterTicker::doIt(){
             pAttributes->Reset();
         }
         break;
-    case 3: //Level beendet
-
+    case 3: // Brücke zu case 4
+        if(pAttributes->backward){
+            modelRotation->rotate(180, 0, 1, 0);
+            pAttributes->backward = false;
+        }
+        Sleep(100);
+        spielerEngineModelMatrix = _playerPhys->getEngineModelMatrix(); //
+        spielerEngineModelMatrix.setColumn(3, startWert);               // Spieler an Start zurücksetzen
+        _playerPhys->setEngineModelMatrix(spielerEngineModelMatrix);     //
+        pAttributes->state =4;
+        break;
+    case 4: //Level beendet
         if(InputObserver::isKeyPressed('y')){
-            if(pAttributes->backward){
-                modelRotation->rotate(180, 0, 1, 0);
-                pAttributes->backward = false;
-            }
-            spielerEngineModelMatrix = _playerPhys->getEngineModelMatrix(); //
-            spielerEngineModelMatrix.setColumn(3, startWert);               // Spieler an Start zurücksetzen
-           _playerPhys->setEngineModelMatrix(spielerEngineModelMatrix);     //
-
             SceneHolder::Instance()->SwitchScene(0);
             pAttributes->ResetLevel();
-
-
-    }
+        }
         break;
 
 
