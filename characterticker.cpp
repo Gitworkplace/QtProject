@@ -94,14 +94,31 @@ void CharacterTicker::doIt(){
         break;
 
     case 2: // spieler im Gameoverscreen
-
         if(InputObserver::isKeyPressed('y')){
             SceneHolder::Instance()->SwitchScene(0);
             pAttributes->Reset();
         }
         break;
-    }
+    case 3: //Level beendet
 
+        if(InputObserver::isKeyPressed('y')){
+            if(pAttributes->backward){
+                modelRotation->rotate(180, 0, 1, 0);
+                pAttributes->backward = false;
+            }
+            spielerEngineModelMatrix = _playerPhys->getEngineModelMatrix(); //
+            spielerEngineModelMatrix.setColumn(3, startWert);               // Spieler an Start zurücksetzen
+           _playerPhys->setEngineModelMatrix(spielerEngineModelMatrix);     //
+
+            SceneHolder::Instance()->SwitchScene(0);
+            pAttributes->ResetLevel();
+
+
+    }
+        break;
+
+
+}
     player->moveCharacter(time, v_MoveFlagsDynCh);
 }
 

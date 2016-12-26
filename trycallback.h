@@ -9,6 +9,7 @@
 #include "playerattributes.h"
 #include "qvector4d.h"
 #include "qmatrix4x4.h"
+#include "sceneholder.h"
 
 
 // Dummy Klasse für Callback erzeugen, kann jede beliebige Klasse auch sein
@@ -70,6 +71,11 @@ public:
         }
     }
 
+    void reachedGoal(PhysicObject*& a, PhysicObject*& b, QList<CollisionPointInfo>& c){
+        SceneHolder::Instance()->SwitchScene(2); //Scene 2 = Level Clear Scene
+        PA->state=3;
+    }
+
 private:
     //Drawable* player_obj;
     Drawable* gift_obj;
@@ -78,3 +84,20 @@ private:
 };
 
 #endif // TRYCALLBACK_H
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -15,8 +15,8 @@ public:
     Node* addLifeCounter();
     void erhoehen(int anzahlGeschenke);
     void erniedrigen(int leben);
-    void Reset(int anzahlLeben);
-    void ResetLeben(int anzahlLeben);
+    void Reset();
+    void ResetLeben();
     void ResetGeschenke();
 
 
@@ -25,12 +25,14 @@ private:
     Drawable* giftCounterZehner[10];
     Drawable* lebenCounter[4];
     Drawable* herz;
+
+    TriangleMesh* zahlen_geo[10];
     QString path;
     Node* giftHolderNode;
     Node* lifeHolderNode;
     int aktEinser;
     int aktZehner;
-    //int aktLeben;
+    int aktLeben;
 };
 
 #endif // INTERFACE_H

@@ -34,6 +34,23 @@ void PlayerAttributes::PlayerDied(){
     lifes--;
 }
 
+void PlayerAttributes::ResetLevel(){ //Wird ausgeführt, wenn Level beendet
+    for(i = killedEnemys.begin(); i != killedEnemys.end(); ++i){
+        (*i)->setEnabled(true);
+        (*i)->getPhysicObject()->registerPhysicObject();
+    }
+
+    for(i = pickedGifts.begin(); i != pickedGifts.end(); ++i){
+        (*i)->setEnabled(true);
+        (*i)->getPhysicObject()->registerPhysicObject();
+    }
+    killedEnemys.clear();
+    pickedGifts.clear();
+    interf->Reset();
+    anzahlGeschenke = 0;
+    state=1;
+}
+
 void PlayerAttributes::Reset(){
 
     isJumping = false;
@@ -43,7 +60,7 @@ void PlayerAttributes::Reset(){
     lifes = 3;
     GODMODE = false;
     if(state == 2){
-        interf->Reset(lifes);
+        interf->Reset();
     }
     state = 1;
 }

@@ -42,20 +42,26 @@ Node* CreateEnemies();
 Node* CreateGUI();
 Node *CreateSnow();
 Node* CreateLights();
+Node* CreateSchlitten();
 Node* initScene1();
 Node* initSceneGameOver();
-unsigned int myScene;
-unsigned int gameOverScene;
+Node* initSceneLevelClear();
+unsigned int myScene;            //0
+unsigned int gameOverScene;      //1
+unsigned int levelClearScene;    //2
+
 
 void SceneManager::initScenes()
 {
-    //std::cout<<std::endl<<std::endl<<"PFAD:"<<path.toStdString()<<std::endl<<std::endl;
     Camera* cam = new Camera;
+    //std::cout<<std::endl<<std::endl<<"PFAD:"<<path.toStdString()<<std::endl<<std::endl;
+
     RenderingContext* myContext = new RenderingContext(cam);
     unsigned int myContextNr = SceneManager::instance()->addContext(myContext);
 
     myScene = SceneManager::instance()->addScene(initScene1());
     gameOverScene = SceneManager::instance()->addScene(initSceneGameOver());
+    levelClearScene = SceneManager::instance()->addScene(initSceneLevelClear());
 
 
     ScreenRenderer* myRenderer = new ScreenRenderer(myContextNr, myScene);
@@ -79,13 +85,12 @@ void SceneManager::initScenes()
 Node* initSceneGameOver(){
     Node* root = new Node;
     Drawable* GameOver_obj = new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over.obj")));
-    GameOver_obj->getProperty<ModelTransformation>()->translate(-2, -6, 0);
+    GameOver_obj->getProperty<ModelTransformation>()->translate(1, -5, 0);
     Drawable* GameOverContinue_obj=new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over_ContinueText.obj")));
-    GameOverContinue_obj->getProperty<ModelTransformation>()->translate(-4.5, 4, 0);
+    GameOverContinue_obj->getProperty<ModelTransformation>()->translate(-3.5, 2, 0);
 
     root->addChild(new Node(GameOver_obj));
     root->addChild((new Node(GameOverContinue_obj)));
-    //GUIHolderNode->addChild(new Node(LevelClear_obj));
     return root;
 
 }
@@ -103,6 +108,21 @@ Node* initScene1()
     root->addChild(CreateGUI());
     root->addChild(CreateSnow());
     root->addChild(CreateLights());
+    root->addChild(CreateSchlitten());
+
+    return root;
+}
+
+Node *initSceneLevelClear(){
+    Node* root=new Node;
+
+    Drawable* LevelClear_obj = new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Level_Clear.obj")));
+    LevelClear_obj->getProperty<ModelTransformation>()->translate(-0, -0, 0);
+    Drawable* LevelClearContinue_obj=new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over_ContinueText.obj")));
+    LevelClearContinue_obj->getProperty<ModelTransformation>()->translate(-4.5, 4, 0);
+
+    root->addChild(new Node(LevelClear_obj));
+    root->addChild((new Node(LevelClearContinue_obj)));
 
     return root;
 }
@@ -347,6 +367,40 @@ Node* CreateLights(){
 
  return lightHolderNode;
 
+}
+
+Node* CreateSchlitten(){
+    //ObjTicker* giftTicker = new ObjTicker();
+
+    Node* SchlittenHolderNode = new Node;
+    SpecificResponseObject<TryCallback>* v_CallbackReceiver =
+    new SpecificResponseObject<TryCallback>(new TryCallback(playerAttributes), &TryCallback::reachedGoal);
+    // Dem Trigger den Callback hinzufügen welcher bei einer Collision ausgeführt wird
+    // Der Callback wird außerdem nur für das Object aufgerufen an das es angehangen wurde
+    // Zuerst Drawable erzeugen und platzieren, dort wird auch der Trigger platziert
+
+    Drawable* schlitten = new Drawable(new TriangleMesh(path + QString("/zeug/Schlitten.obj")));
+    Trigger* schlittenTriggers= new Trigger(v_PhysicEngine, schlitten);
+    PhysicObject *schlittenPhys=v_PhysicEngine->createNewPhysicObject(schlitten);
+    //DynamicCharacter* schlittenChar=v_PhysicEngine->createNewDynamicCharacter(schlitten);
+    PhysicObjectConstructionInfo* ConstrinfSchlitten= new PhysicObjectConstructionInfo();
+
+    ConstrinfSchlitten->setCollisionHull(CollisionHull::BoxAABB);
+    schlittenPhys->setConstructionInfo(ConstrinfSchlitten);
+
+    schlitten->getProperty<ModelTransformation>()->translate(10, 2, 0.f);
+
+    SchlittenHolderNode->addChild(new Node(schlitten));
+
+    schlittenTriggers->registerTrigger();
+
+    schlittenPhys->setPhysicType(2); //kinematic geht!
+    schlittenPhys->setPhysicState(0); // ist jetzt static
+    schlittenPhys->registerPhysicObject();
+
+    schlittenTriggers->addResponseObject(v_CallbackReceiver);
+
+    return SchlittenHolderNode;
 }
 
 

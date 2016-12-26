@@ -12,6 +12,7 @@ public:
     void EnemyKilled(Drawable* enemy);
     void PlayerDied();
     void Reset();
+    void ResetLevel();
 
 
     char state = 1;

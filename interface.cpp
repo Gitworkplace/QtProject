@@ -8,6 +8,11 @@ Interface::Interface(QString path){
     aktEinser=0;
     aktZehner=0;
     //aktLeben=3;
+
+
+    for(int i=0;i<10;i++){
+        zahlen_geo[i]=new TriangleMesh(path + QString("/zeug/Zahlen/") + QString::number(i) + QString(".obj"));
+    }
 }
 
 Node* Interface::addGiftCounter(){
@@ -18,11 +23,10 @@ Node* Interface::addGiftCounter(){
                                                  path + QString("/zeug/Shader/player.frag"));
 
     for(int i=0;i<10;i++){
-        QString zahl=QString::number(i);
-        qInfo()<<zahl;
-        giftCounterEiner[i]=new Drawable(new TriangleMesh(path + QString("/zeug/Zahlen/") + zahl + QString(".obj")));
+        //QString zahl=QString::number(i);  Nicht mehr benötigt
+        giftCounterEiner[i]=new Drawable(zahlen_geo[i]);
         giftHolderNode->addChild(new Node(giftCounterEiner[i]));
-        giftCounterZehner[i]=new Drawable(new TriangleMesh(path + QString("/zeug/Zahlen/") + zahl + QString(".obj")));
+        giftCounterZehner[i]=new Drawable(zahlen_geo[i]);
         giftHolderNode->addChild(new Node(giftCounterZehner[i]));
         giftCounterEiner[i]->setShader(s1);
         giftCounterZehner[i]->setShader(s2);
@@ -47,7 +51,7 @@ Node* Interface::addLifeCounter(){
     for(int i=0;i<=3;i++){
         QString zahl=QString::number(i);
         qInfo()<<zahl;
-        lebenCounter[i]=new Drawable(new TriangleMesh(path + QString("/zeug/Zahlen/") + zahl + QString(".obj")));
+        lebenCounter[i]=new Drawable(zahlen_geo[i]);
         lifeHolderNode->addChild(new Node(lebenCounter[i]));
         lebenCounter[i]->setShader(s1);
 
@@ -94,14 +98,16 @@ void Interface::erniedrigen(int aktLeben){
     lebenCounter[--aktLeben]->setEnabled(true);
 }
 
-void Interface::Reset(int anzahlLeben){
-    ResetLeben(anzahlLeben);
+void Interface::Reset(){
+    ResetLeben();
     ResetGeschenke();
 }
 
-void Interface::ResetLeben(int anzahlLeben){
-    lebenCounter[0]->setEnabled(false);
-    lebenCounter[anzahlLeben]->setEnabled(true);
+void Interface::ResetLeben(){
+    for(int i=0;i<4;i++){
+        lebenCounter[i]->setEnabled(false);
+    }
+    lebenCounter[3]->setEnabled(true);
 }
 
 void Interface::ResetGeschenke(){
