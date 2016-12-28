@@ -232,14 +232,29 @@ Node* CreateGifts(){
     // Der Callback wird außerdem nur für das Object aufgerufen an das es angehangen wurde
     // Zuerst Drawable erzeugen und platzieren, dort wird auch der Trigger platziert
 
-    int iAnzahl = 5;
+    int iAnzahl = 40;
     Drawable* gifts[iAnzahl] ={0};
     Trigger* giftTriggers[iAnzahl] ={0};
     Drawable* gift_geo = new Drawable(new TriangleMesh(path + QString("/zeug/Geschenk.obj")));
 
-    float xPositionen[iAnzahl] = {33, 35, 37, 46.5f, 53.5f};
-    float yPositionen[iAnzahl] = {13,  13,  13,   10.5f,   10.5f};
-    //1
+    //float xPositionen[iAnzahl] = {33, 35, 37, 46.5f, 53.5f};
+    //float yPositionen[iAnzahl] = {13,  13,  13,   10.5f,   10.5f};
+    float xPositionen[iAnzahl] = {-35,-33,-23,-12,22,
+                                   42,50,62,58,75,
+                                   91,91,98,98,105,
+                                   105,98,98,87,73,
+                                   73,117,117,111,111,
+                                   155,168,177,184,192,
+                                   196,201.3,201.3,201.3,201.3,
+                                   201.3,65,32,37,56};
+    float yPositionen[iAnzahl] = {4,6,6,6,6,
+                                 15,12,14,22,22,
+                                 20,24,20,24,20,
+                                 24,10,12,2,10,
+                                 12,6,14,14,18,
+                                 2,12,17,24,22,
+                                 22,8,11,14,17,
+                                 20,1,12,12,10};
     for(int i= 0; i < iAnzahl; i++){
         gifts[i] = new Drawable(gift_geo->getGeometry());
         gifts[i]->getProperty<ModelTransformation>()->translate(xPositionen[i], yPositionen[i], 0.f);
@@ -268,15 +283,27 @@ Node* CreateEnemies(){
     // Der Callback wird außerdem nur für das Object aufgerufen an das es angehangen wurde
     // Zuerst Drawable erzeugen und platzieren, dort wird auch der Trigger platziert
 
-    int iAnzahl = 5;
+    int iAnzahl = 27;
     Drawable* enemy_geo = new Drawable(new TriangleMesh(path + QString("/zeug/Gegner.obj")));
     Drawable* enemies_obj[iAnzahl] ={0};
     DynamicCharacter* enemiesChar[iAnzahl] = {0};
     PhysicObject* enemiesPhys[iAnzahl] = {0};
     PhysicObjectConstructionInfo* ConstrinfEnemy[iAnzahl] = {0};
 
-    int xPositionen[iAnzahl] = {7, 14, 42, 140, 153};
-    float yPositionen[iAnzahl] = {1.9f,  1.9f,  1.9f,   1.9f,   3.9f};
+    //float xPositionen[iAnzahl] = {7, 14, 42, 140, 153};
+   // float yPositionen[iAnzahl] = {1.9f,  1.9f,  1.9f,   1.9f,   3.9f};
+    float xPositionen[iAnzahl] = {-10,7,14,42,46,
+                                 54,72,80,94.5,101.5,
+                                 86,78,74,98,105,
+                                 112,123,134,140,153,
+                                 162.5,172.5,165,172,179,
+                                 186,193};
+    float yPositionen[iAnzahl] = {2,2,2,2,8,
+                                 8,22,22,14,14,
+                                 6,10,2,2,2,
+                                 2,12,2,2,4,
+                                 10,15,2,2,2,
+                                 2,2};
    // v_Constrinf->setCollisionHull(CollisionHull::BVHTriangleMesh);
    // v_Constrinf->setRestitution(0.0f);
     //v_Constrinf->setFriction(0.0f);
@@ -391,8 +418,8 @@ Node* CreateSchlitten(){
     ConstrinfSchlitten->setCollisionHull(CollisionHull::BoxAABB);
     schlittenPhys->setConstructionInfo(ConstrinfSchlitten);
 
-    schlitten->getProperty<ModelTransformation>()->translate(10, 2, 0.f);
-
+    schlitten->getProperty<ModelTransformation>()->translate(202, 2, 0.f);
+    //schlitten->getProperty<ModelTransformation>()->translate(10, 2, 0.f); //Am Anfang zum Testen
     SchlittenHolderNode->addChild(new Node(schlitten));
 
     schlittenTriggers->registerTrigger();
