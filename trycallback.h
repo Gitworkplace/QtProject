@@ -34,7 +34,7 @@ public:
         if(b->getCollisionMask() == 8){
                  PA->PlayerDied();
         }
-        else{
+        else {
         b->removeFromPhysicEngine();
         obj = (Drawable*)b->getGeometry();
         obj->setEnabled(false);
@@ -53,7 +53,6 @@ public:
     void reachedGoal(PhysicObject*& a, PhysicObject*& b, QList<CollisionPointInfo>& c){
         PA->state = 3;
         SceneHolder::Instance()->SwitchScene(2); //Scene 2 = Level Clear Scene
-
     }
 
 private:

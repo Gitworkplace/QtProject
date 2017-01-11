@@ -1,4 +1,4 @@
-#sginclude "://zeug/Shader/commonlightmatdefs.inc"
+#sginclude "://shaders/commonlightmatdefs.inc"
 
 float phongKd(vec3 lightViewDirection, vec3 viewNormal)
 {
@@ -10,9 +10,15 @@ float phongKs(vec3 viewDirection, vec3 reflectDirection)
     return pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
 }
 
+float phongKsHalf(vec3 viewDirection, vec3 lightViewDirection, vec3 viewNormal)
+{
+    vec3 halfVec = normalize(lightViewDirection + viewDirection);
+    return pow(max(dot(viewNormal, halfVec), 0.0), material.shininess);
+}
+
 float phongKa()
 {
-    return(1.0);
+    return 1.0;
 }
 
 float computeLightAttenuation(float lightViewDistance, vec2 lightAttenuations)
@@ -34,18 +40,26 @@ vec3 phongKdKaColor(vec3 lightViewDirection, vec3 viewNormal, vec3 lightAmbient,
     return color;
 }
 
-vec3 phongKdKaColorWithAttCalc(vec3 unnormalizedLightViewDirection, vec3 viewNormal, vec3 lightAmbient, vec3 lightDiffuse, vec2 lightAttenuations, vec3 textureColor)
-{
-    float lightViewDistance = length(unnormalizedLightViewDirection);
-    float lightAttenuation = computeLightAttenuation(lightViewDistance, lightAttenuations);
-    vec3 lightViewDirection = unnormalizedLightViewDirection / lightViewDistance;
-    return phongKdKaColor(lightViewDirection, viewNormal, lightAmbient, lightDiffuse, lightAttenuation, textureColor);
-}
-
 vec3 phongKsColor(vec3 lightViewDirection, vec3 viewDirection, vec3 viewNormal, vec3 lightSpecular, float lightAttenuation)
 {
     return (phongKs(viewDirection, -reflect(lightViewDirection, viewNormal)) * lightAttenuation) * (lightSpecular * material.specular.rgb);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 vec3 phong(vec3 unnormalizedLightViewDirection, vec3 viewDirection, vec3 viewNormal, vec3 lightAmbient, vec3 lightDiffuse, vec3 lightSpecular, vec2 lightAttenuations, vec3 textureColor)
 {
@@ -57,20 +71,71 @@ vec3 phong(vec3 unnormalizedLightViewDirection, vec3 viewDirection, vec3 viewNor
     return phongKdKaColor(lightViewDirection, viewNormal, lightAmbient, lightDiffuse, lightAttenuation, textureColor) + specularColor;
 }
 
+
+
 vec3 phong(vec3 viewPosition, vec3 viewDirection, vec3 viewNormal, vec3 textureColor)
 {
     vec3 color = vec3(0.0);
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < sunLightCount; ++i)
     {
-        color += phong(-sunLights[i].viewDirection, viewDirection, viewNormal, sunLights[i].ambient,
+        color += phong(vec3(0.0, 1.0, 1.0), viewDirection, viewNormal, sunLights[i].ambient,
                        sunLights[i].diffuse, sunLights[i].specular, vec2(0.0), textureColor).rgb;
+    }
+
+    return color;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+vec3 phongHalf(vec3 unnormalizedLightViewDirection, vec3 viewDirection, vec3 viewNormal, vec3 lightAmbient, vec3 lightDiffuse, vec3 lightSpecular, vec2 lightAttenuations, vec3 textureColor)
+{
+    float lightViewDistance = length(unnormalizedLightViewDirection);
+    float lightAttenuation = computeLightAttenuation(lightViewDistance, lightAttenuations);
+    vec3 lightViewDirection = unnormalizedLightViewDirection / lightViewDistance;
+    vec3 specularColor = (phongKsHalf(viewDirection, lightViewDirection, viewNormal) * lightAttenuation) * (lightSpecular * material.specular.rgb);
+
+    return phongKdKaColor(lightViewDirection, viewNormal, lightAmbient, lightDiffuse, lightAttenuation, textureColor) + specularColor;
+}
+
+
+
+vec3 phongHalf(vec3 viewPosition, vec3 viewDirection, vec3 viewNormal, vec3 textureColor)
+{
+    vec3 color = vec3(0.0);
+    for (int i = 0; i < sunLightCount; ++i)
+    {
+        color += phongHalf(-sunLights[i].viewDirection, viewDirection, viewNormal, sunLights[i].ambient,
+                           sunLights[i].diffuse, sunLights[i].specular, vec2(0.0), textureColor).rgb;
     }
 
     for (int i = 0; i < pointLightCount; ++i)
     {
         vec3 lightViewDirection = pointLights[i].viewPosition - viewPosition;
-        color += phong(lightViewDirection, viewDirection, viewNormal, pointLights[i].ambient,
-                       pointLights[i].diffuse, pointLights[i].specular, pointLights[i].attenuations, textureColor).rgb;
+        color += phongHalf(lightViewDirection, viewDirection, viewNormal, pointLights[i].ambient,
+                           pointLights[i].diffuse, pointLights[i].specular, pointLights[i].attenuations, textureColor).rgb;
     }
 
     for (int i = 0; i < spotLightCount; ++i)
@@ -81,11 +146,10 @@ vec3 phong(vec3 viewPosition, vec3 viewDirection, vec3 viewNormal, vec3 textureC
         {
             // Fragment innerhalb Falloffradius vom Spotlicht => Wende Phong auf Fragment an
             float falloffExponent = pow(clampedCosine, spotLights[i].falloffExponent);
-            color += phong(lightViewDirection, viewDirection, viewNormal, spotLights[i].ambient,
-                           spotLights[i].diffuse, spotLights[i].specular, spotLights[i].attenuations, textureColor).rgb * falloffExponent;
+            color += phongHalf(lightViewDirection, viewDirection, viewNormal, spotLights[i].ambient,
+                               spotLights[i].diffuse, spotLights[i].specular, spotLights[i].attenuations, textureColor).rgb * falloffExponent;
         }
     }
 
     return color;
 }
-

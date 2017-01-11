@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shaders/common.vert.inc</file>
+        <file>shaders/commonlight.vert.inc</file>
+        <file>shaders/commonlightmatdefs.inc</file>
+        <file>shaders/commonlightmodels.inc</file>
+        <file>shaders/PhongFragment.frag</file>
+        <file>shaders/PhongFragment.vert</file>
+        <file>shaders/schnee.vert</file>
+        <file>shaders/texture.frag</file>
+        <file>shaders/texture.vert</file>
+    </qresource>
+</RCC>

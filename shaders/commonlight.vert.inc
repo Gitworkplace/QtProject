@@ -1,8 +1,8 @@
 #sgdefine COMMONLIGHT_VERT_INC //Define setzen um Mehrfache inkludierung auszuschliessen
 
-#sginclude "://zeug/Shader/common.vert.inc"
-#sginclude "://zeug/Shader/commonlightmatdefs.inc"
-#sginclude "://zeug/Shader/commonlightmodels.inc"
+#sginclude "://shaders/common.vert.inc"
+#sginclude "://shaders/commonlightmatdefs.inc"
+#sginclude "://shaders/commonlightmodels.inc"
 
 vec3 eyePosition()
 {
@@ -33,3 +33,9 @@ vec3 phong(vec3 lightViewDirection, vec3 lightAmbient, vec3 lightDiffuse, vec3 l
 {
     return phong(lightViewDirection, eyeViewVec(), eyeNormalVec(), lightAmbient, lightDiffuse, lightSpecular, lightAttenuations, vec3(1.0));
 }
+
+vec3 phongHalf(vec3 lightViewDirection, vec3 lightAmbient, vec3 lightDiffuse, vec3 lightSpecular, vec2 lightAttenuations)
+{
+    return phongHalf(lightViewDirection, eyeViewVec(), eyeNormalVec(), lightAmbient, lightDiffuse, lightSpecular, lightAttenuations, vec3(1.0));
+}
+

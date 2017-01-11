@@ -26,12 +26,12 @@ void ObjTicker::doIt(){
 
     //Schneefall
     //int b=0;
-    for(i=listSnow.begin();i!=listSnow.end();++i){
+    /*for(i=listSnow.begin();i!=listSnow.end();++i){
         modelTransformation=*i;
         modelTransformation->rotate(0.25f, 0, 1, 0);
         modelTransformation->translate((rand()%5)/2000.0, -(rand()%5)/200.f, 0);
 
-    }
+    }*/
 }
 
 void ObjTicker::AddObj(Drawable* obj){

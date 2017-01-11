@@ -16,6 +16,7 @@
 #include "shadermanager.h"
 #include <time.h>
 #include "simplecube.h"
+#include "shadertimed.h"
 
 #include "playerattributes.h"
 #include "trycallback.h"
@@ -43,6 +44,7 @@ Node* CreateGUI();
 Node *CreateSnow();
 Node* CreateLights();
 Node* CreateSchlitten();
+Node* CreateBackground();
 Node* initScene1();
 Node* initSceneGameOver();
 Node* initSceneLevelClear();
@@ -121,9 +123,13 @@ Node* initScene1()
     root->addChild(CreateGifts());
     root->addChild(CreateEnemies());
     root->addChild(CreateGUI());
-    root->addChild(CreateSnow());
+    //root->addChild(CreateSnow());
     root->addChild(CreateLights());
     root->addChild(CreateSchlitten());
+
+    root->addChild(CreateBackground());
+
+
 
     return root;
 }
@@ -133,6 +139,21 @@ Node* initScene1()
 Node* CreatePlayer(){
     Drawable* player_obj = new Drawable(new TriangleMesh(path + QString("/zeug/Player.obj"))); //"C:\\Users\\stlnsche\\Desktop\\computergrafik\\Player.obj"));
     //Shader Spieler
+
+    Material* m;
+    m = player_obj->getProperty<Material>();
+    m->setDiffuse(0.8f, 0.8f, 0.8f, 1.f);
+    m->setAmbient(0.2f, .3f, .1f, 1.f);
+    m->setAmbient(1.f, 1.f, 1.f, 1.f);
+    m->setSpecular(0.8f, .8f, .8f, 1.f);
+    m->setShininess(8.f);
+
+    Texture* t = player_obj->getProperty<Texture>();
+    t->loadPicture(path + QString("/zeug/Playerpaint.png"));
+
+    Shader* s=ShaderManager::getShader( QString("://shaders/PhongFragment.vert"), QString("://shaders/PhongFragment.frag"));
+    player_obj->setShader(s);
+
     //Shader* s =ShaderManager::getShader( path + QString("/zeug/Shader/texture.vert"),
     //                                             path + QString("/zeug/Shader/player.frag"));
     //player_obj->setShader(s);
@@ -170,11 +191,20 @@ Node* CreatePlayer(){
 Node* CreateLevel(){
 
     Drawable* level_obj = new Drawable(new TriangleMesh(path + QString("/zeug/LevelNeu.obj")));
+    Material* m;
 
-    //Shader Level
-    //Shader* s=ShaderManager::getShader( path + QString("/zeug/Shader/texture.vert"),
-    //                                             path + QString("/zeug/Shader/texture.frag"));
-    //level_obj->setShader(s);
+    m = level_obj->getProperty<Material>();
+
+
+    //m->setDiffuse(0.4f, .5f, .2f, 1.f);
+    m->setDiffuse(0.8f, 0.8f, 0.8f, 1.f);
+    m->setAmbient(0.2f, .3f, .1f, 1.f);
+    m->setAmbient(1.f, 1.f, 1.f, 1.f);
+    m->setSpecular(0.8f, .8f, .8f, 1.f);
+    m->setShininess(8.f);
+
+    Shader* s=ShaderManager::getShader( QString("://shaders/PhongFragment.vert"), QString("://shaders/PhongFragment.frag"));
+    level_obj->setShader(s);
 
     level_obj->setStaticGeometry(true); // Der Oberfläche ein statisches verhalten zuweisen
     PhysicObject* v_PlanePhys = v_PhysicEngine->createNewPhysicObject(level_obj);
@@ -236,6 +266,8 @@ Node* CreateGifts(){
     Drawable* gifts[iAnzahl] ={0};
     Trigger* giftTriggers[iAnzahl] ={0};
     Drawable* gift_geo = new Drawable(new TriangleMesh(path + QString("/zeug/Geschenk.obj")));
+    Material* m;
+    Texture* t;
 
     //float xPositionen[iAnzahl] = {33, 35, 37, 46.5f, 53.5f};
     //float yPositionen[iAnzahl] = {13,  13,  13,   10.5f,   10.5f};
@@ -259,6 +291,29 @@ Node* CreateGifts(){
         gifts[i] = new Drawable(gift_geo->getGeometry());
         gifts[i]->getProperty<ModelTransformation>()->translate(xPositionen[i], yPositionen[i], 0.f);
         //gifts[i]->getProperty<ModelTransformation>()->translate(-2, 2, 0.f);
+
+        m = gifts[i]->getProperty<Material>();
+        m->setDiffuse(0.8f, 0.8f, 0.8f, 1.f);
+        m->setAmbient(0.2f, .3f, .1f, 1.f);
+        m->setAmbient(1.f, 1.f, 1.f, 1.f);
+        m->setSpecular(0.8f, .8f, .8f, 1.f);
+        m->setShininess(8.f);
+
+        t = gifts[i]->getProperty<Texture>();
+        switch(rand()%3){
+        case 0:
+            t->loadPicture(path + QString("/zeug/Geschenkpaint0.png"));
+            break;
+        case 1:
+            t->loadPicture(path + QString("/zeug/Geschenkpaint1.png"));
+            break;
+        case 2:
+            t->loadPicture(path + QString("/zeug/Geschenkpaint2.png"));
+            break;
+        }
+        Shader* s=ShaderManager::getShader( QString("://shaders/PhongFragment.vert"), QString("://shaders/PhongFragment.frag"));
+        gifts[i]->setShader(s);
+
 
         GiftsHolderNode->addChild(new Node(gifts[i]));
 
@@ -285,10 +340,14 @@ Node* CreateEnemies(){
 
     int iAnzahl = 27;
     Drawable* enemy_geo = new Drawable(new TriangleMesh(path + QString("/zeug/Gegner.obj")));
+    //Drawable* enemy_geo = new Drawable(new SimpleSphere(1));
     Drawable* enemies_obj[iAnzahl] ={0};
     DynamicCharacter* enemiesChar[iAnzahl] = {0};
     PhysicObject* enemiesPhys[iAnzahl] = {0};
     PhysicObjectConstructionInfo* ConstrinfEnemy[iAnzahl] = {0};
+
+    Texture* t;
+
 
     //float xPositionen[iAnzahl] = {7, 14, 42, 140, 153};
    // float yPositionen[iAnzahl] = {1.9f,  1.9f,  1.9f,   1.9f,   3.9f};
@@ -308,9 +367,32 @@ Node* CreateEnemies(){
    // v_Constrinf->setRestitution(0.0f);
     //v_Constrinf->setFriction(0.0f);
 
+
+    Material* m;
+
+
+
+
+    //m->setDiffuse(0.4f, .5f, .2f, 1.f);
+
+
     for(int i= 0; i < iAnzahl; i++){
+
         enemies_obj[i] = new Drawable(enemy_geo->getGeometry());
         enemiesNode->addChild(new Node(enemies_obj[i]));
+
+        m = enemies_obj[i]->getProperty<Material>();
+        m->setDiffuse(0.8f, 0.8f, 0.8f, 1.f);
+        m->setAmbient(0.2f, .3f, .1f, 1.f);
+        m->setAmbient(1.f, 1.f, 1.f, 1.f);
+        m->setSpecular(0.8f, .8f, .8f, 1.f);
+        m->setShininess(8.f);
+
+        t =  enemies_obj[i]->getProperty<Texture>();
+        t->loadPicture(path + QString("/zeug/gegnerpaint.png"));
+
+        Shader* s=ShaderManager::getShader( QString("://shaders/PhongFragment.vert"), QString("://shaders/PhongFragment.frag"));
+        enemies_obj[i]->setShader(s);
 
         enemies_obj[i]->getProperty<ModelTransformation>()->translate(xPositionen[i], yPositionen[i], 0.f);
         enemiesChar[i] = v_PhysicEngine->createNewDynamicCharacter(enemies_obj[i]);
@@ -327,6 +409,8 @@ Node* CreateEnemies(){
         enemiesPhys[i]->setPhysicState(0); // ist jetzt static
         enemiesPhys[i]->registerPhysicObject();
         //enemiesPhys[i]->setCollisionMask(12); //hä?
+
+
 
         enemiesPhys[i]->addResponseObject(v_CallbackReceiver3);
     }
@@ -372,11 +456,20 @@ Node* CreateSnow(){
 
         snow[i] = new Drawable();
         snow[i]->setGeometry(snow_geo->getGeometry());
+
+
         //snow[i] = new Drawable(new TriangleMesh(path + QString("/zeug/Schnee.obj")));
-        snow[i]->getProperty<ModelTransformation>()->translate(rand()%300, rand()%150+10, -rand()%5);
+        //snow[i]->getProperty<ModelTransformation>()->translate(rand()%300, rand()%150+10, -rand()%5);
+        snow[i]->getProperty<ModelTransformation>()->translate(rand()%300, 40, -rand()%5);
+
         snowHolderNode->addChild(new Node(snow[i]));
 
         objTicker->AddSnow(snow[i]);
+
+        ShaderTimed *s;
+        s=ShaderManager::getShader<ShaderTimed>(QString("://shaders/schnee.vert"), QString("://shaders/PhongFragment.frag"));
+        s->setMsecsPerIteration(20000);
+        snow[i]->setShader(s);
     }
     return snowHolderNode;
 }
@@ -385,6 +478,8 @@ Node* CreateLights(){
  SunLight* sunLight = new SunLight;
 
  //sunLight->mViewDirection=QVector3D(0,-1,0);
+ //qInfo()<<"HIERSUCHEN:::::"<<sunLight->getViewDirection();
+ sunLight->mViewDirection=QVector3D(0,-1,0);
  sunLight->setDiffuse(0.7, 0.7, 0.7);
  sunLight->setSpecular(0.6, 0.6, 0.6);
  sunLight->setAmbient(0.6, 0.6, 0.6);
@@ -393,7 +488,7 @@ Node* CreateLights(){
 
  lightHolderNode->addChild(sunLightNode);
 
-    qInfo()<<"HIERSUCEHN"<<gameOverScene;
+    //qInfo()<<"HIERSUCEHN"<<gameOverScene;
 
  return lightHolderNode;
 
@@ -431,6 +526,30 @@ Node* CreateSchlitten(){
     schlittenTriggers->addResponseObject(v_CallbackReceiver);
 
     return SchlittenHolderNode;
+}
+
+Node* CreateBackground(){
+    Node* BackgroundHolderNode = new Node;
+
+    Drawable* background = new Drawable(new TriangleMesh(path + QString("/zeug/Background2.obj")));
+    background->getProperty<ModelTransformation>()->translate(0, -20, -100);
+
+    Material* m;
+    m = background->getProperty<Material>();
+    m->setDiffuse(0.8f, 0.8f, 0.8f, 1.f);
+    m->setAmbient(0.2f, .3f, .1f, 1.f);
+    m->setAmbient(1.f, 1.f, 1.f, 1.f);
+    m->setSpecular(0.8f, .8f, .8f, 1.f);
+    m->setShininess(8.f);
+
+    Texture* t = background->getProperty<Texture>();
+    t->loadPicture(path + QString("/zeug/Backgroundpaint.png"));
+
+    Shader* s=ShaderManager::getShader( QString("://shaders/PhongFragment.vert"), QString("://shaders/PhongFragment.frag"));
+    background->setShader(s);
+
+    BackgroundHolderNode->addChild(new Node(background));
+    return BackgroundHolderNode;
 }
 
 
