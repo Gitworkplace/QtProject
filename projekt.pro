@@ -60,6 +60,7 @@ DISTFILES += \
     zeug/Shader/lebencounter.vert \
     zeug/Shader/Level.frag \
     zeug/Shader/Level.vert \
+    zeug/Shader/screen.vert
 
 
 RESOURCES += \

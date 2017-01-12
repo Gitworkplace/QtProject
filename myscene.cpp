@@ -91,6 +91,12 @@ Node* initSceneGameOver(){
     Drawable* GameOverContinue_obj=new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over_ContinueText.obj")));
     GameOverContinue_obj->getProperty<ModelTransformation>()->translate(-3.5, 2, 0);
 
+
+    Shader* s =ShaderManager::getShader( path + QString("/zeug/Shader/screen.vert"),
+                                                 path + QString("/zeug/Shader/player.frag"));
+    GameOver_obj->setShader(s);
+    GameOverContinue_obj->setShader(s);
+
     root->addChild(new Node(GameOver_obj));
     root->addChild((new Node(GameOverContinue_obj)));
     return root;
@@ -101,10 +107,14 @@ Node *initSceneLevelClear(){
     Node* root=new Node;
 
     Drawable* LevelClear_obj = new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Level_Clear.obj")));
-    LevelClear_obj->getProperty<ModelTransformation>()->translate(-0, -0, 0);
+    LevelClear_obj->getProperty<ModelTransformation>()->translate(-0, 8, 0);
     Drawable* LevelClearContinue_obj=new Drawable(new TriangleMesh(path + QString("/zeug/GUI/Game_Over_ContinueText.obj")));
     LevelClearContinue_obj->getProperty<ModelTransformation>()->translate(-4.5, 4, 0);
 
+    Shader* s =ShaderManager::getShader( path + QString("/zeug/Shader/screen.vert"),
+                                                 path + QString("/zeug/Shader/player.frag"));
+    LevelClear_obj->setShader(s);
+    LevelClearContinue_obj->setShader(s);
     root->addChild(new Node(LevelClear_obj));
     root->addChild((new Node(LevelClearContinue_obj)));
 
@@ -479,7 +489,7 @@ Node* CreateLights(){
 
  //sunLight->mViewDirection=QVector3D(0,-1,0);
  //qInfo()<<"HIERSUCHEN:::::"<<sunLight->getViewDirection();
- sunLight->mViewDirection=QVector3D(0,-1,0);
+ //sunLight->mViewDirection=QVector3D(0,-1,0);
  sunLight->setDiffuse(0.7, 0.7, 0.7);
  sunLight->setSpecular(0.6, 0.6, 0.6);
  sunLight->setAmbient(0.6, 0.6, 0.6);
@@ -505,6 +515,21 @@ Node* CreateSchlitten(){
     // Zuerst Drawable erzeugen und platzieren, dort wird auch der Trigger platziert
 
     Drawable* schlitten = new Drawable(new TriangleMesh(path + QString("/zeug/Schlitten.obj")));
+    Material* m;
+    m = schlitten->getProperty<Material>();
+    m->setDiffuse(0.38f, 0.18f, 0.04f, 1.f);
+    m->setAmbient(1.f, 1.f, 1.f, 1.f);
+    m->setSpecular(0.38f, 0.18f, 0.04f, 1.f);
+    m->setShininess(8.f);
+
+    Texture* t;
+    t =  schlitten->getProperty<Texture>();
+    t->loadPicture(path + QString("/zeug/Schlittenpaint.png"));
+
+    Shader* s=ShaderManager::getShader( QString("://shaders/PhongFragment.vert"), QString("://shaders/PhongFragment.frag"));
+    schlitten->setShader(s);
+
+
     Trigger* schlittenTriggers= new Trigger(v_PhysicEngine, schlitten);
     PhysicObject *schlittenPhys=v_PhysicEngine->createNewPhysicObject(schlitten);
     //DynamicCharacter* schlittenChar=v_PhysicEngine->createNewDynamicCharacter(schlitten);
